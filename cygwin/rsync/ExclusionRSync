@@ -1,0 +1,36 @@
+groovy
+python
+.idea
+mat
+maven
+AppData
+Favorites
+Menu Démarrer
+ntuser.*
+Searches
+Voisinage réseau
+Application Data
+IECompatCache
+Mes documents
+SendTo
+Contacts
+Modèles
+NTUSER.*
+Pictures
+Videos
+Cookies
+Links
+Music
+Recent
+VirtualBox VMs
+Desktop
+Local Settings
+Saved Games
+"Voisinage d'impression"
+.m2/repository
+.vagrant.d
+.VirtualBox
+.IdeaIC*
+.atom
+http*cygwin*
+*.stackdump
