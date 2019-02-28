@@ -1,0 +1,11 @@
+# Activation de la coloration par powerline-shell
+
+function _update_ps1() {
+    export PYTHONIOENCODING=UTF-8
+    PS1=$(powerline-shell $?)
+}
+
+if [[ $TERM != linux && -z $TERMINAL_EMULATOR && ! $PROMPT_COMMAND =~ _update_ps1 ]]; then
+    export DBG_PROMPT_COLOR="powerline, $PROMPT_COLOR"
+    PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
+fi

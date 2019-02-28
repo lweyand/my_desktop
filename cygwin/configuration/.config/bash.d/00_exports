@@ -1,0 +1,15 @@
+#Java
+export PATH=${PATH}:"/cygdrive/${JAVA_HOME}/bin/"
+
+#Maven
+export MVN_HOME="/cygdrive/c/Data/maven/maven/"
+export PATH=${PATH}:"${MVN_HOME}/bin/"
+
+#VirtualBox
+export VB_HOME="C:\Program Files\Oracle\VirtualBox"
+export PATH=${PATH}:"${VB_HOME}"
+
+#Python windows
+export PY_HOME="/cygdrive/c/Data/python"
+export PYTHONPATH="${PY_HOME}:${PY_HOME}/Scripts:${PY_HOME}/lib/site-packages"
+export PATH=${PATH}:"${PY_HOME}:${PY_HOME}/Scripts"

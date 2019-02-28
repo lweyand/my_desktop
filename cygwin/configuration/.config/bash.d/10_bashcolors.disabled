@@ -1,0 +1,29 @@
+# Activation de la coloration en bash
+
+function _update_ps1_bash() {
+    # Coloration Git
+    PS1='\[\033]0;${PWD//[^[:ascii:]]/?}\007\]' # set window title
+    PS1="$PS1"'\n'                 # new line
+    PS1="$PS1"'\[\033[32m\]'       # change to green
+    PS1="$PS1"'\u@\h '             # user@host<space>
+    PS1="$PS1"'\[\033[33m\]'       # change to brownish yellow
+    PS1="$PS1"'\w'                 # current working directory
+    if test -f ~/.git.prompt
+    then
+      . ~/.git.prompt
+      GIT_PS1_SHOWCOLORHINTS=1
+      GIT_PS1_SHOWDIRTYSTATE=1
+      GIT_PS1_SHOWUNTRACKEDFILES=1
+      GIT_PS1_SHOWUPSTREAM=auto
+      PS1="$PS1"'\[\033[36m\]'  # change color to cyan
+      PS1="$PS1"'`__git_ps1`'   # bash function
+    fi
+    PS1="$PS1"'\[\033[0m\]'        # change color
+    PS1="$PS1"'\n'                 # new line
+    PS1="$PS1"'$ '
+}
+
+if [[ $TERM != linux && ! $PROMPT_COMMAND =~ _update_ps1_bash ]]; then
+    export DBG_PROMPT_COLOR="bashcolors, $PROMPT_COLOR"
+    PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
+fi
