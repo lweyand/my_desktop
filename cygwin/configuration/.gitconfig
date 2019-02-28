@@ -1,0 +1,40 @@
+[user]
+	name = Laurent Weyand
+	email = <CHANGE EMAIL>
+[core]
+	fscache = true
+	editor = nano
+[alias]
+	git = ! git
+	st = status
+	ci = commit
+	co = checkout
+	fap = fetch --all --prune
+	glog = log --graph --oneline --decorate --branches\n--tags --date-order --full-history
+	lg = log --graph --decorate --date-order --full-history\n--pretty=format:'%C(yellow)%h%Creset <%C(red)%an%Creset>\n(%C(green)%ai%Creset)%C(auto)%d%Creset %s'
+	lga = log --graph --decorate --date-order --full-history\n--pretty=format:'%C(yellow)%h%Creset <%C(red)%an%Creset>\n(%C(green)%ai%Creset)%C(auto)%d%Creset %s' --all
+	incoming = ! git fetch --quiet && git log --graph\n--oneline --date-order --full-history ..@{upstream}
+	outgoing = ! git fetch --quiet && git log --graph\n--oneline --date-order --full-history @{push}..
+	incoming-all = ! git fetch --quiet && git for-each-ref\n--format='%(refname:short)' refs/heads | xargs -I {} git log --graph --oneline\n--decorate --date-order --full-history {}..{}@{upstream}
+	outgoing-all = ! git fetch --quiet && git for-each-ref\n--format='%(refname:short)' refs/heads | xargs -I {} git log --graph --oneline\n--decorate --date-order --full-history {}@{push}..{}
+	forget = update-index --assume-unchanged
+	unforget = update-index --no-assume-unchanged
+	forgotten = ! git ls-files -v | grep ^[a-z]
+	vimdiff = difftool --no-prompt --tool=vimdiff
+[status]
+	showUntrackedFiles = all
+[color]
+	ui = auto
+[pull]
+	rebase = preserve
+[rebase]
+	autostash = true
+	autosquash = true
+[merge]
+	tool = kdiff3
+[diff]
+	guitool = kdiff3
+[credential]
+	helper = cache --timeout=36000
+[http]
+	sslVerify = false
