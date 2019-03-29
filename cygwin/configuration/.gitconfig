@@ -21,6 +21,7 @@
 	unforget = update-index --no-assume-unchanged
 	forgotten = ! git ls-files -v | grep ^[a-z]
 	vimdiff = difftool --no-prompt --tool=vimdiff
+	mib = reset --hard
 [status]
 	showUntrackedFiles = all
 [color]
