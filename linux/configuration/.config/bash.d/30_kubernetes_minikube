@@ -1,0 +1,6 @@
+# Formation Kubernetes
+alias formation_kub="cd ${HOME}/Documents/Formations/KubernetesDevelopper/"
+alias minikube="${HOME}/Documents/Formations/KubernetesDevelopper/minikube "
+source <(minikube completion bash)
+source <(kubectl completion bash)
+

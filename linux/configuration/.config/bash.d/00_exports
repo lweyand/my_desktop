@@ -1,0 +1,6 @@
+#Java
+export JAVA_HOME=/usr/lib/jvm/oracle-java8-jdk-amd64/
+
+#Maven
+export MVN_HOME=~/Outils/maven
+export PATH=${MVN_HOME}/bin:$PATH
