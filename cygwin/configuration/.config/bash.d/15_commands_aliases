@@ -1,3 +1,6 @@
 alias workspace='cd /cygdrive/c/Data/Workspace/git'
+alias github='cd /cygdrive/c/Data/Workspace/github'
 alias cygroot='cygstart --action=runas /cygdrive/c/cygwin64/bin/mintty.exe -i /cygdrive/c/cygwin64/Cygwin-Terminal.ico'
 alias backup='/cygdrive/c/Data/Workspace/git/crash-test-dummy/rsync/backup.sh'
+alias tmux='tmux -2 '
+alias ifconfig='ipconfig '
