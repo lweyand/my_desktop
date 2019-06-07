@@ -4,3 +4,4 @@ alias cygroot='cygstart --action=runas /cygdrive/c/cygwin64/bin/mintty.exe -i /c
 alias backup='/cygdrive/c/Data/Workspace/git/crash-test-dummy/rsync/backup.sh'
 alias tmux='tmux -2 '
 alias ifconfig='ipconfig '
+alias watch='watch '
