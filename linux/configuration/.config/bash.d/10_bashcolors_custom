@@ -1,5 +1,5 @@
 # Activation de la coloration en bash
-
+# Requiert .git.prompt: https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
 function _update_ps1_bash() {
     last_result=$?
 
@@ -49,7 +49,7 @@ function _update_ps1_bash() {
 
 # set a fancy prompt (non-color, unless we know we "want" color)
 case "$TERM" in
-    xterm-color|*-256color) color_prompt=yes;;
+    xterm-color|*-256color|screen) color_prompt=yes;;
 esac
 
 if [[ "$color_prompt" = yes && ! $PROMPT_COMMAND =~ _update_ps1_bash ]]; then
