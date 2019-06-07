@@ -1,0 +1,9 @@
+# Activation de la coloration par powerline-bash
+# https://gitlab.com/bersace/powerline.bash
+
+if [[ $TERM != linux && -z $TERMINAL_EMULATOR && ! $PROMPT_COMMAND =~ __update_ps1 ]]; then
+    export DBG_PROMPT_COLOR="powerline.bash, $DBG_PROMPT_COLOR"
+    POWERLINE_SEP=$'\u25B6'
+    POWERLINE_THINSEP=$'\u276F'
+    source ${HOME}/.config/powerline/powerline.bash
+fi
