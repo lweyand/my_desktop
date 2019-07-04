@@ -12,5 +12,4 @@ export -f getIp
 # proxy cntlm
 export http_proxy=http://$(getIp):3129
 export https_proxy=http://$(getIp):3129
-export no_proxy=localhost,127.0.0.*,10.*,192.168.*,git-webdev.ib.fr.cly
-
+export no_proxy=localhost,127.0.0.*,10.*,192.168.*

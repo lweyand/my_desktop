@@ -1,0 +1,17 @@
+# Activation de la coloration par powerline-shell
+
+#function _update_ps1_pl_bash() {
+#    source ${HOME}/.config/powerline-bash/powerline.bash
+#    PROMPT_COMMAND='__update_ps1 $?'
+#}
+
+if [[ $TERM != linux && -z $TERMINAL_EMULATOR && ! $PROMPT_COMMAND =~ _update_ps1_pl_bash ]]; then
+    source ${HOME}/.config/powerline-bash/powerline.bash
+    export DBG_PROMPT_COLOR="powerline_bash, $PROMPT_COLOR"
+#    POWERLINE_SEP=''
+#    POWERLINE_THINSEP=''
+    POWERLINE_SEP=$'\u25B6'
+    POWERLINE_THINSEP='>'
+    POWERLINE_LONG_DIR='true'
+    PROMPT_COMMAND="__update_ps1_pl_bash; $PROMPT_COMMAND"
+fi

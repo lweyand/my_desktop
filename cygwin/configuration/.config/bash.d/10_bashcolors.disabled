@@ -25,5 +25,5 @@ function _update_ps1_bash() {
 
 if [[ $TERM != linux && ! $PROMPT_COMMAND =~ _update_ps1_bash ]]; then
     export DBG_PROMPT_COLOR="bashcolors, $PROMPT_COLOR"
-    PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
+    PROMPT_COMMAND="_update_ps1_bash; $PROMPT_COMMAND"
 fi
