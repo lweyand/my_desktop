@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-DEBUG='true'
+DEBUG='false'
 
 BASE_ORIGIN="/cygdrive/c"
 BASE_TARGET="/cygdrive/p"

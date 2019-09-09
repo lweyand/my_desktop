@@ -1,0 +1,13 @@
+<Options>
+    <Option Name="PrependPath" Value="1"/>
+    <Option Name="Include_doc" Value="1"/>
+    <Option Name="Include_dev" Value="0"/>
+    <Option Name="Include_exe" Value="1"/>
+    <Option Name="Include_launcher" Value="1"/>
+    <Option Name="Include_lib" Value="1"/>
+    <Option Name="Include_pip" Value="1"/>
+    <Option Name="Include_tcltk" Value="1"/>
+    <Option Name="Include_test" Value="1"/>
+    <Option Name="Include_tools" Value="1"/>
+    <Option Name="SimpleInstall" Value="1"/>
+</Options>
