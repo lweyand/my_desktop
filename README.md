@@ -1,4 +1,10 @@
-Installation de mon poste de DEV windows
+Comme cela ne m'intéresse pas de perdre du temps à intaller mon poste de DEV,
+à chaque fois que je vais chez un client, ou que je change de poste chez celui-ci,
+j'ai décidé de scripter tout ceci. Il y a certe plusieurs script, mais cela me fait gagner pas
+mal de temps.
+
+En général j'installe tout dans un répertoire `C:\Data`
+
 
 # Windows:
 
@@ -25,6 +31,8 @@ Installation de mon poste de DEV windows
 
 ## configuration
 Copier ma configuration de base de cygwin, qui se trouve dans cygwin/configuration, dans la home cygwin
+
+[Configuration](cygwin/configuration/README.md)
 
 /!\ : vérifier ce qui se trouve dans le ~/.bashrc orginel avant de l'écraser.
 
