@@ -7,7 +7,7 @@ GREEN="\033[1;32m"
 NOCOLOR="\033[0m"
 
 BASE_PATH="$(dirname ${0})"
-CYGWIN_BASE_PATH='/cygdrive/c/Program Files (x86)/Cntlm'
+source ./local-setup.sh
 
 function success(){
     echo -e -n "["
@@ -22,12 +22,15 @@ function failed(){
 }
 
 function stop() {
-    $(ps -W | awk '/cntlm.exe/,NF=1'  | xargs kill -f)
+    declare -r pid=$(ps -W | awk '/cntlm.exe/,NF=1')
+    if [ "x${pid}" != "x" ]; then
+      $(ps -W | awk '/cntlm.exe/,NF=1' | xargs kill -f)
+    fi
     success "Cntlm proxy stopped"
 }
 
 function status() {
-    pid="$(ps -W | awk '/cntlm.exe/,NF=1')"
+    declare -r pid="$(ps -W | awk '/cntlm.exe/,NF=1')"
 
     if [ "x${pid}" == "x" ]; then
         failed "Cntlm proxy not started"
@@ -39,14 +42,14 @@ function status() {
 function start() {
     sleep 2s
 
-    sh "${BASE_PATH}/update-cntlm-ini.sh" "${CYGWIN_BASE_PATH}"
+    sh "${BASE_PATH}/update-cntlm-ini.sh" "${CNTLM_BASE_PATH}"
     result=$?
     if [ ${result} -ne 0 ]; then
         failed "Can't update cntlm.ini file"
         exit ${result}
     fi
 
-    "${CYGWIN_BASE_PATH}/cntlm.exe" -c "${CYGWIN_BASE_PATH}/cntlm.ini"
+    "${CNTLM_BASE_PATH}/cntlm.exe" -c "${CNTLM_BASE_PATH}/cntlm.ini"
     result=$?
     if [ ${result} -ne 0 ]; then
         failed "Can't start cntlm proxy"
