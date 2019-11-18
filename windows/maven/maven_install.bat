@@ -1,10 +1,21 @@
-set workspace_base_dir='/cygdrive/c/Data/Workspace/git'
+@echo off
+rem cls
+echo ========================================================
+echo Please wait while Maven installs.......
+echo ========================================================
+echo.
+setlocal
 
-set USER=weyand_l
-set maven_dir=C:\Data\maven
+pushd .
+cd ..
+call config.bat
+popd
 
-set maven_archive=C:\Users\%USER%\Downloads\apache-maven-3.5.4-bin.zip
+rem set USER=weyand_l
+set maven_archive=%BINARIES_DIR%\apache-maven-3.5.4-bin.zip
+set maven_install_dir=%INSTALL_BASE_DIR%\maven
 
-mkdir %maven_dir%
-unzip %maven_archive% -d %maven_dir%
-mklink /J %maven_dir%\maven %maven_dir%\apache-maven-3.5.4
+
+mkdir %maven_install_dir%
+unzip %maven_archive% -d %maven_install_dir%
+mklink /J %maven_install_dir%\maven %maven_install_dir%\apache-maven-3.5.4

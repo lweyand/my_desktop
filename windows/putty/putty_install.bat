@@ -1,11 +1,17 @@
 @echo off
 rem cls
 echo ========================================================
-echo Please wait while Office PuTTY 0.62 installs.......
+echo Please wait while Office PuTTY  installs.......
 echo ========================================================
 echo.
 setlocal
-set putty_archive=C:\Users\weyand_l\Downloads\putty-64bit-0.70-installer.msi
+
+pushd .
+cd ..
+call config.bat
+popd
+
+set putty_archive=%BINARIES_DIR%\putty-64bit-0.72-installer.msi
 
 rem if not exist %SystemDrive%\install\Logs md %SystemDrive%\Install\Logs
 

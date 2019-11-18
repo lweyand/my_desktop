@@ -1,7 +1,14 @@
 rem Script DOS pour installer et configurer cygwin
 
-set USER=weyand_l
-set CYGWIN_PATH=C:\Users\%USER%\Downloads
+@echo off
+rem cls
+echo ========================================================
+echo Please wait while Maven installs.......
+echo ========================================================
+echo.
+setlocal
+
+set CYGWIN_PATH=%BINARIES_DIR%
 set CYGWIN_REPO=%CYGWIN_PATH%
 set CYGWIN_EXE=setup-x86_64.exe
 set CYGWIN_ROOT=C:\cygwin64
