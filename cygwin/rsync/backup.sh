@@ -22,7 +22,7 @@ function backup() {
         test='--dry-run'
     fi
 
-    rsync -rltDvWxP --exclude-from=${EXCLUDE_FILE} --delete --human-readable ${test} --log-file=${LOG_FILE} "${source_dir}" "${target_dir}"
+    rsync -rtvWxP --exclude-from=${EXCLUDE_FILE} --delete --human-readable ${test} --log-file=${LOG_FILE} "${source_dir}" "${target_dir}"
 }
 
 if [[ -e ${EXCLUDE_FILE} ]]; then

@@ -20,7 +20,7 @@ function restore() {
         test='--dry-run'
     fi
 
-    rsync -rltDvWxP --human-readable ${test} --log-file=${LOG_FILE} "${source_dir}" "${target_dir}"
+    rsync -rtvWxP --exclude-from=${EXCLUDE_FILE} --human-readable ${test} --log-file=${LOG_FILE} "${source_dir}" "${target_dir}"
 }
 
 # Restaure répertoire Data
