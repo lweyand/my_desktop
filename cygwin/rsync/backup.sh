@@ -21,8 +21,13 @@ function backup() {
         echo "backup ${source_dir} ${target_dir}"
         test='--dry-run'
     fi
-
-    rsync -rtvWxP --exclude-from=${EXCLUDE_FILE} --delete --human-readable ${test} --log-file=${LOG_FILE} "${source_dir}" "${target_dir}"
+    # -r, --recursive             recurse into directories
+    # -t, --times                 preserve modification times
+    # -v, --verbose               increase verbosity
+    # -W, --whole-file            copy files whole (w/o delta-xfer algorithm)
+    # -x, --one-file-system       don't cross filesystem boundaries
+    # -P                          same as --partial --progress
+    rsync -rtvWxP --no-p --no-g --chmod=ugo=rwX --exclude-from=${EXCLUDE_FILE} --delete --human-readable ${test} --log-file=${LOG_FILE} "${source_dir}" "${target_dir}"
 }
 
 if [[ -e ${EXCLUDE_FILE} ]]; then
