@@ -11,7 +11,7 @@ cd ..
 call config.bat
 popd
 
-set putty_archive=%BINARIES_DIR%\putty-64bit-0.72-installer.msi
+set putty_archive=%BINARIES_DIR%\%PUTTY_EXE%
 
 rem if not exist %SystemDrive%\install\Logs md %SystemDrive%\Install\Logs
 

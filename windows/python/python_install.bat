@@ -14,7 +14,7 @@ call config.bat
 popd
 
 set python_path=%BINARIES_DIR%
-set python_exec=python-3.7.4.exe
+set python_exec=%PYTHON_EXEC%
 set python_install_dir=%INSTALL_BASE_DIR%\python
 
-%python_path%\%python_exec% TargetDir=%python_install_dir% PrependPath=1 Include_doc=1 Include_dev=0 Include_exe=1 Include_launcher=1 Include_lib=1  Include_pip=1 Include_tcltk=1 Include_test=1 Include_tools=1
+%python_path%\%python_exec% InstallAllUsers=0 TargetDir=%python_install_dir% PrependPath=1 Include_doc=1 Include_dev=0 Include_exe=1 Include_launcher=1 Include_lib=1  Include_pip=1 Include_tcltk=1 Include_test=1 Include_tools=1

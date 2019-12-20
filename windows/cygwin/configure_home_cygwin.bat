@@ -1,6 +1,10 @@
 rem Script DOS pour installer et configurer cygwin
 
-set CYGWIN_EXE=setup-x86_64.exe
+pushd .
+cd ..
+call config.bat
+popd
+
 set CYGWIN_ROOT=C:\cygwin64
 
 rem --- Mise en place de la home windows dans la home cygwin ---

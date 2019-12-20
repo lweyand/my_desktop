@@ -12,7 +12,7 @@ call config.bat
 popd
 
 rem set USER=weyand_l
-set maven_archive=%BINARIES_DIR%\apache-maven-3.5.4-bin.zip
+set maven_archive=%BINARIES_DIR%\%MAVEN_ARCHIVE%
 set maven_install_dir=%INSTALL_BASE_DIR%\maven
 
 
