@@ -201,6 +201,6 @@
 [[ -z "$PS1" ]] && return
 
 conf_d=${HOME}/.config/bash.d
-[[ -d "${conf_d]" ]] && for file in $(ls -1  -I "*.disabled" ${conf_d} | sort); do
+[[ -d "${conf_d}" ]] && for file in $(ls -1  -I "*.disabled" ${conf_d} | sort); do
         source ${conf_d}/${file}
 done
