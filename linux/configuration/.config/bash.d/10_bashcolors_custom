@@ -14,7 +14,7 @@ function _update_ps1_bash() {
       PS1="$PS1"'@debian'          # @debian
     else
       PS1="$PS1"'\[\033[32m\]'     # change to green
-      #PS1="$PS1"'@\h'             # @host<space>
+      #PS1="$PS1"'@\h'             # @host
     fi
     PS1="$PS1"' '                  # <space>
 
