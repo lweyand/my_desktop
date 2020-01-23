@@ -16,4 +16,8 @@ if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
 
-alias workspace='cd ${HOME}/Documents/workpace/Git/'
+if [[ "$(uname -r)" =~ 'Microsoft' ]]; then
+  alias workspace='cd /mnt/c/Data/Workspace/git/'
+else
+  alias workspace='cd ${HOME}/Documents/Workspace/git/'
+fi
