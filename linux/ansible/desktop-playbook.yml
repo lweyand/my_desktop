@@ -1,0 +1,93 @@
+---
+
+- hosts: desktop
+  gather_facts: true
+  tasks:
+    - name: "Install wanted app"
+      become: yes
+      apt:
+        name: "{{ core | join(',') }}"
+        state: present
+    - name: "Remove unwanted app"
+      become: yes
+      apt:
+        name: "{{ remove | join(',') }}"
+        state: absent
+        autoremove: yes
+# Java
+    - name: "Install Java tools"
+      become: yes
+      apt:
+        name: "{{ java | join(',') }}"
+        state: present
+# VMs
+    - name: "Install VMs Managers"
+      become: yes
+      apt:
+        name: "{{ virtualization | join(',') }}"
+        state: present
+
+# Docker
+    - name: "Get ubuntu version"
+      command: lsb_release -cs
+      register: ubuntu_version
+      changed_when: false
+    - name: "Add Docker Apt signing key, uses whichever key is at the URL"
+      become: yes
+      apt_key:
+        url: "{{ docker.gpg_uri }}"
+        state: present
+    - name: "Add Docker repository"
+      become: yes
+      apt_repository:
+        repo: "deb [arch=amd64] {{ docker.uri }} {{ ubuntu_version.stdout }} stable"
+        state: present
+      register: repo_updated
+    - name: "Refresh apt cache"
+      become: yes
+      apt:
+        update_cache: yes
+      when: repo_updated.changed == true
+    - name: "Install Docker"
+      become: yes
+      apt:
+        name: "{{ docker.packages | join(',') }}"
+        state: present
+    - name: "Add user {{ docker.user_to_add }} to docker group"
+      become: yes
+      user:
+        name: "{{ docker.user_to_add }}"
+        group: docker
+# Snap
+    - name: "Install other stuff with snaps"
+      become: yes
+      snap:
+        name: "{{ item.name }}"
+        classic: "{{ item.classic }}"
+      with_items:
+        - "{{ snap }}"
+# Fixes
+    #- name: "Fix Volume control"
+    #  become: yes
+    #  blockinfile:
+    #    path: '/usr/share/pulseaudio/alsa-mixer/paths/analog-output.conf.common'
+    #    block: |
+    #      [Element Master]
+    #      switch = mute
+    #      volume = ignore
+    #    insertbefore: "[Element External Amplifier]"
+    #    marker: "<!-- {mark} ANSIBLE MANAGED BLOCK -->"
+    # Fix Taken from:
+    # https://gist.github.com/hamidzr/dd81e429dc86f4327ded7a2030e7d7d9
+#   Sound
+    #- name: "Get '/lib/firmware/intel/sof/sof-cnl.ri' file stat"
+    #  become: yes
+    #  stat:
+    #    path: '/lib/firmware/intel/sof/sof-cnl.ri'
+    #  register: current_firmware_stat
+    #- debug:
+    #    var: current_firmware_stat
+    - include: install_snd_firmware.yml
+      when: snd == 'install'
+    - include: remove_snd_firmware.yml
+      when: snd == 'remove'

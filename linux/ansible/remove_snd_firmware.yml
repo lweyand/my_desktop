@@ -1,0 +1,62 @@
+---
+
+- name: "Get '/lib/firmware/intel/sof/sof-cnl.ri' file stat"
+  become: yes
+  stat:
+    path: '/lib/firmware/intel/sof/sof-cnl.ri'
+  register: current_firmware_stat
+- name: "Set firmware version"
+  set_fact:
+    theprojectsof_firmware: 'v1.4.2'
+- debug:
+    var: theprojectsof_firmware
+- debug:
+    var: current_firmware_stat
+- name: "Delete sof firmware symlink"
+  become: yes
+  file:
+    path: '/lib/firmware/intel/sof/sof-cnl.ri'
+    state: absent
+  when: 'current_firmware_stat.stat.islnk is defined and current_firmware_stat.stat.islnk == True and current_firmware_stat.stat.lnk_target == "/lib/firmware/intel/sof/sof-cnl-"+theprojectsof_firmware+".ri"'
+- name: "Restore ubuntu original firmware if it's not a symlink"
+  become: yes
+  copy:
+    src: '/lib/firmware/intel/sof/sof-cnl-ori.ri'
+    dest: '/lib/firmware/intel/sof/sof-cnl.ri'
+    follow: yes
+  when: 'current_firmware_stat.stat.islnk is defined and current_firmware_stat.stat.islnk == True and current_firmware_stat.stat.lnk_target == "/lib/firmware/intel/sof/sof-cnl-"+theprojectsof_firmware+".ri"'
+- name: "Remove file /etc/modprobe.d/alsa-base.conf"
+  become: yes
+  file:
+    path: '/etc/modprobe.d/alsa-base.conf'
+    state: absent
+#- name: "Copy /etc/modprobe.d/blacklist.conf"
+#  become: yes
+#  copy:
+#    src: 'files/blacklist.conf'
+#    dest: '/etc/modprobe.d/blacklist.conf'
+- name: "blacklist original snd modules"
+  become: yes
+  blockinfile:
+    path: /etc/modprobe.d/blacklist.conf
+    marker: "#-- {mark} ANSIBLE MANAGED BLOCK --"
+    insertafter: EOF
+    block: |
+      blacklist snd_hda_intel
+      blacklist snd_soc_skl
+    state: absent
+- name: "Remove directory /usr/share/alsa/ucm/sof-skl_hda_card/"
+  become: yes
+  file:
+    path: '/usr/share/alsa/ucm/sof-skl_hda_card'
+    state: absent
+#- name: "Remove file /usr/share/alsa/ucm/sof-skl_hda_card/HiFi.conf"
+#  become: yes
+#  file:
+#    dest: '/usr/share/alsa/ucm/sof-skl_hda_card/HiFi.conf'
+#    state: absent
+#- name: "Remove file /usr/share/alsa/ucm/sof-skl_hda_card/sof-skl_hda_card.conf"
+#  become: yes
+#  file:
+#    path: '/usr/share/alsa/ucm/sof-skl_hda_card/sof-skl_hda_card.conf'
+#    state: absent

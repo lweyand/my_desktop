@@ -1,2 +1,3 @@
 *.iml
 cygwin-packages.txt
+*.retry

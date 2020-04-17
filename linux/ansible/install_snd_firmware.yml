@@ -1,0 +1,87 @@
+---
+
+- name: "Get '/lib/firmware/intel/sof/sof-cnl.ri' file stat"
+  become: yes
+  stat:
+    path: '/lib/firmware/intel/sof/sof-cnl.ri'
+  register: current_firmware_stat
+- name: "Set firmware version"
+  set_fact:
+    theprojectsof_firmware: 'v1.4.2'
+- name: "Back up ubuntu original firmware if it's not a symlink"
+  become: yes
+  copy:
+    src: '/lib/firmware/intel/sof/sof-cnl.ri'
+    dest: '/lib/firmware/intel/sof/sof-cnl-ori.ri'
+    follow: yes
+  when: 'current_firmware_stat.stat.islnk is defined and current_firmware_stat.stat.islnk == True and current_firmware_stat.stat.lnk_target != "/lib/firmware/intel/sof/sof-cnl-"+theprojectsof_firmware+".ri"'
+
+
+
+#  $ ls -al /lib/firmware/intel/sof/
+#  total 584
+#  drwxr-xr-x 4 root root   4096 mars  18 17:34 .
+#  drwxr-xr-x 4 root root  12288 mars  17 18:13 ..
+#  drwxr-xr-x 3 root root   4096 mars  16 16:32 cml
+#  drwxr-xr-x 3 root root   4096 mars  16 16:32 cnl
+#  lrwxrwxrwx 1 root root     34 janv. 29 20:12 sof-cml.ldc -> cml/intel/sof-cml-v1.3-0f73628.ldc
+#  lrwxrwxrwx 1 root root     33 janv. 29 20:12 sof-cml.ri -> cml/intel/sof-cml-v1.3-0f73628.ri
+#  lrwxrwxrwx 1 root root     34 janv. 29 20:12 sof-cnl.ldc -> cnl/intel/sof-cnl-v1.3-0f73628.ldc
+#  lrwxrwxrwx 1 root root     33 janv. 29 20:12 sof-cnl.ri -> cnl/intel/sof-cnl-v1.3-0f73628.ri
+#  -rw-r--r-- 1 root root 286720 janv. 24 19:24 sof-cnl-v1.4.1.ri
+#  -rw-r--r-- 1 root root 286720 mars  17 11:33 sof-cnl-v1.4.2.ri
+
+
+- name: "Delete ubuntu original firmware if it's not a symlink"
+  become: yes
+  file:
+    path: '/lib/firmware/intel/sof/sof-cnl.ri'
+    state: absent
+  when: 'current_firmware_stat.stat.islnk is defined and current_firmware_stat.stat.islnk == True and current_firmware_stat.stat.lnk_target != "/lib/firmware/intel/sof/sof-cnl-"+theprojectsof_firmware+".ri"'
+- name: "Download firmware version {{ theprojectsof_firmware }}"
+  become: yes
+  get_url:
+    url: "https://github.com/thesofproject/sof/releases/download/{{ theprojectsof_firmware }}/sof-cnl-{{ theprojectsof_firmware }}.ri"
+    dest: "/lib/firmware/intel/sof/sof-cnl-{{ theprojectsof_firmware }}.ri"
+    mode: '0644'
+- name: "Create symlink to firmware sof-cnl-{{ theprojectsof_firmware }}.ri"
+  become: yes
+  file:
+    src: "/lib/firmware/intel/sof/sof-cnl-{{ theprojectsof_firmware }}.ri"
+    dest: '/lib/firmware/intel/sof/sof-cnl.ri'
+    mode: '0644'
+    state: link
+- name: "Creating file /etc/modprobe.d/alsa-base.conf"
+  become: yes
+  copy:
+    src: 'files/alsa-base.conf'
+    dest: '/etc/modprobe.d/alsa-base.conf'
+#- name: "Copy /etc/modprobe.d/blacklist.conf"
+#  become: yes
+#  copy:
+#    src: 'files/blacklist.conf'
+#    dest: '/etc/modprobe.d/blacklist.conf'
+- name: "blacklist original snd modules"
+  become: yes
+  blockinfile:
+    path: /etc/modprobe.d/blacklist.conf
+    marker: "#-- {mark} ANSIBLE MANAGED BLOCK --"
+    insertafter: EOF
+    block: |
+      blacklist snd_hda_intel
+      blacklist snd_soc_skl
+- name: "Create directory /usr/share/alsa/ucm/sof-skl_hda_card/"
+  become: yes
+  file:
+    path: '/usr/share/alsa/ucm/sof-skl_hda_card'
+    state: directory
+- name: "Creating file /usr/share/alsa/ucm/sof-skl_hda_card/HiFi.conf"
+  become: yes
+  copy:
+    src: 'files/HiFi.conf'
+    dest: '/usr/share/alsa/ucm/sof-skl_hda_card/HiFi.conf'
+- name: "Creating file /usr/share/alsa/ucm/sof-skl_hda_card/sof-skl_hda_card.conf"
+  become: yes
+  copy:
+    src: 'files/sof-skl_hda_card.conf'
+    dest: '/usr/share/alsa/ucm/sof-skl_hda_card/sof-skl_hda_card.conf'

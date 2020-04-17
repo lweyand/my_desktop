@@ -68,7 +68,9 @@ _kube_ps1_init() {
       _KUBE_PS1_CLOSE_ESC=$'\002'
       _KUBE_PS1_DEFAULT_BG=$'\033[49m'
       _KUBE_PS1_DEFAULT_FG=$'\033[39m'
-      PROMPT_COMMAND="_kube_ps1_update_cache;${PROMPT_COMMAND:-:}"
+      if [[ ! $PROMPT_COMMAND =~ _kube_ps1_update_cache ]]; then
+        PROMPT_COMMAND="_kube_ps1_update_cache;${PROMPT_COMMAND:-:}"
+      fi
       ;;
   esac
 }
@@ -235,29 +237,7 @@ _kube_ps1_get_context_ns() {
       KUBE_PS1_LAST_TIME=$(date +%s)
     fi
   elif [[ "${KUBE_PS1_SHELL}" == "zsh" ]]; then
-    KUBE_PS1_LAST_TIME=$EPOCHSECONDS
-  fi
-
-  KUBE_PS1_CONTEXT="$(${KUBE_PS1_BINARY} config current-context 2>/dev/null)"
-
-  if [[ ! -z "${KUBE_PS1_CLUSTER_FUNCTION}" ]]; then
-    KUBE_PS1_CONTEXT=$($KUBE_PS1_CLUSTER_FUNCTION $KUBE_PS1_CONTEXT)
-  fi
-
-  if [[ -z "${KUBE_PS1_CONTEXT}" ]]; then
-    KUBE_PS1_CONTEXT="N/A"
-    KUBE_PS1_NAMESPACE="N/A"
-    return
-  elif [[ "${KUBE_PS1_NS_ENABLE}" == true ]]; then
-    KUBE_PS1_NAMESPACE="$(${KUBE_PS1_BINARY} config view --minify --output 'jsonpath={..namespace}' 2>/dev/null)"
-    # Set namespace to 'default' if it is not defined
-    KUBE_PS1_NAMESPACE="${KUBE_PS1_NAMESPACE:-default}"
-
-    if [[ ! -z "${KUBE_PS1_NAMESPACE_FUNCTION}" ]]; then
-        KUBE_PS1_NAMESPACE=$($KUBE_PS1_NAMESPACE_FUNCTION $KUBE_PS1_NAMESPACE)
-    fi
-
-  fi
+    KUBE_PS1_LAST_TIME=$ET
 }
 
 _kubeon_usage() {
@@ -356,7 +336,4 @@ kube_ps1() {
   echo "${KUBE_PS1}"
 }
 
-if [[ $TERM != linux && -z $TERMINAL_EMULATOR && ! $PROMPT_COMMAND =~ _kube_ps1_update_cache ]]; then
-    # Set kube-ps1 shell defaults
-    _kube_ps1_init
-fi
+_kube_ps1_init
