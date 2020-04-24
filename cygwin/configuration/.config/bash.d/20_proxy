@@ -9,7 +9,15 @@ function getIp() {
 
 export -f getIp
 
-# proxy cntlm
-export http_proxy=http://$(getIp):3129
-export https_proxy=http://$(getIp):3129
-export no_proxy=localhost,127.0.0.*,10.*,192.168.*
+function set-proxy() {
+  # proxy cntlm
+  export http_proxy=http://$(getIp):3129
+  export https_proxy=http://$(getIp):3129
+  export no_proxy=localhost,127.0.0.*,10.*,192.168.*
+}
+
+export -f set-proxy
+
+set-proxy
+
+alias unset-proxy='unset no_proxy NO_PROXY HTTP_PROXY http_proxy HTTPS_PROXY https_proxy'
