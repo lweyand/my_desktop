@@ -1,10 +1,10 @@
 ---
 
 core:
-  - xfce4-terminal
-  - keepass2
+  - ubuntu-core-launcher
   # xdotool is required by keepass to autocomplete
   - xdotool
+  - keepassxc
   - libreoffice
   - freeplane
   - gimp
@@ -16,7 +16,6 @@ core:
   - deja-dup
   - vlc
 #  (snapd)
-  - ubuntu-core-launcher
   - tree
   - tmux
   - wget
@@ -27,6 +26,8 @@ core:
   - git
   - lxrandr
   - alsa-firmware-loaders
+  - python-is-python3
+  - v4l2loopback-dkms
 
 remove:
   - abiword
@@ -36,28 +37,31 @@ remove:
   - xfburn
   - lxterminal
   - gnumeric
-
-java:
-  - default-jdk
-  - maven
-
-virtualization:
-  - vagrant
-  - virtualbox
-
-docker:
-  user_to_add: laurent
-  gpg_uri: https://download.docker.com/linux/ubuntu/gpg
-  uri: https://download.docker.com/linux/ubuntu
-  packages:
-    - docker-ce
-    - docker-ce-cli
-    - containerd.io
+  - galculator
+  - trojita
+  - skanlite
+  - transmission
+  - transmission-qt
+  - quassel
+  - 2048-qt
+  - k3b
+  - gnome-mpv
+  - file-roller
+  - leafpad
+  - qtpass
+  - pidgin
+  - xpad
+  - gnome-sudoku
+  - sgt-launcher
+  - sgt-puzzles
+  - gnome-mines
 
 snap:
   - name: kubectl
     classic: yes
   - name: intellij-idea-community
     classic: yes
-  - name: sublime-text
+  - name: chromium
     classic: yes
+  - name: obs-studio
+    classic: no
