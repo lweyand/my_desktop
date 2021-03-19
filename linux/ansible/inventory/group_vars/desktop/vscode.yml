@@ -1,0 +1,7 @@
+---
+
+vscode:
+  gpg_uri: https://packages.microsoft.com/keys/microsoft.asc
+  uri: https://packages.microsoft.com/repos/vscode
+  packages: 
+    - code

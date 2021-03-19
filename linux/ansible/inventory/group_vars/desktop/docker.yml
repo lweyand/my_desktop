@@ -1,0 +1,16 @@
+---
+
+docker:
+  gpg_uri: https://download.docker.com/linux/ubuntu/gpg
+  uri: https://download.docker.com/linux/ubuntu
+  packages:
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+
+docker_compose:
+  version: '1.26.0'
+  uri: "https://github.com/docker/compose/releases/download/"
+  target: '/usr/local/bin/docker-compose'
+  completion_uri: "https://raw.githubusercontent.com/docker/compose/1.26.0/contrib/completion/bash/docker-compose"
+  completion_target: '/home/laurent/.config/bash.d/20_completion_docker_compose'
