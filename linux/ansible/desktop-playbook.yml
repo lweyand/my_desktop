@@ -150,29 +150,3 @@
           copy:
             src: files/Muzo.colorscheme
             dest: ~/.config/qterminal.org/color-schemes/Muzo.colorscheme
-
-# Fixes
-    #- name: "Fix Volume control"
-    #  become: yes
-    #  blockinfile:
-    #    path: '/usr/share/pulseaudio/alsa-mixer/paths/analog-output.conf.common'
-    #    block: |
-    #      [Element Master]
-    #      switch = mute
-    #      volume = ignore
-    #    insertbefore: "[Element External Amplifier]"
-    #    marker: "<!-- {mark} ANSIBLE MANAGED BLOCK -->"
-    # Fix Taken from:
-    # https://gist.github.com/hamidzr/dd81e429dc86f4327ded7a2030e7d7d9
-#   Sound
-    #- name: "Get '/lib/firmware/intel/sof/sof-cnl.ri' file stat"
-    #  become: yes
-    #  stat:
-    #    path: '/lib/firmware/intel/sof/sof-cnl.ri'
-    #  register: current_firmware_stat
-    #- debug:
-    #    var: current_firmware_stat
-#    - include: install_snd_firmware.yml
-#      when: snd == 'install'
-#    - include: remove_snd_firmware.yml
-#      when: snd == 'remove'
