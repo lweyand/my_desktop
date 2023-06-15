@@ -1,2 +1,4 @@
 *.iml
 cygwin-packages.txt
+*.retry
+linux/ansible/inventory/host_vars/localhost.yml

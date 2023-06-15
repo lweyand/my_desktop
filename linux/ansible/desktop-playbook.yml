@@ -1,0 +1,178 @@
+---
+
+- hosts: desktop
+  gather_facts: true
+  tasks:
+    - name: "Install wanted app"
+      become: yes
+      apt:
+        name: "{{ core | join(',') }}"
+        state: present
+    - name: "Remove unwanted app"
+      become: yes
+      apt:
+        name: "{{ remove | join(',') }}"
+        state: absent
+        autoremove: yes
+# Java
+    - name: "Install Java tools"
+      become: yes
+      apt:
+        name: "{{ java | join(',') }}"
+        state: present
+# VMs
+    - name: "Install VMs Managers"
+      become: yes
+      apt:
+        name: "{{ virtualization | join(',') }}"
+        state: present
+
+    - name: "Get ubuntu version"
+      command: lsb_release -cs
+      register: ubuntu_version
+      changed_when: false
+# Docker
+    - name: "Add Docker Apt signing key, uses whichever key is at the URL"
+      become: yes
+      apt_key:
+        url: "{{ docker.gpg_uri }}"
+        state: present
+    - name: "Add Docker repository"
+      become: yes
+      apt_repository:
+        repo: "deb [arch=amd64] {{ docker.uri }} {{ ubuntu_version.stdout }} stable"
+        state: present
+      register: dock_repo_updated
+    - name: "Refresh apt cache"
+      become: yes
+      apt:
+        update_cache: yes
+      when: dock_repo_updated.changed == true
+    - name: "Install Docker"
+      become: yes
+      apt:
+        name: "{{ docker.packages | join(',') }}"
+        state: present
+    - name: "Add user {{ docker_user.user_to_add }} to docker group"
+      become: yes
+      user:
+        name: "{{ docker_user.user_to_add }}"
+        group: docker
+    - name: "Get OS"
+      command: 'uname -s'
+      register: dock_comp_os
+    - name: "Get OS x86"
+      command: 'uname -m'
+      register: dock_comp_x86
+    - name: "Docker compose"
+      become: yes
+      get_url:
+        url: "{{ docker_compose.uri }}/{{ docker_compose.version }}/docker-compose-{{ dock_comp_os.stdout_lines[0] }}-{{ dock_comp_x86.stdout_lines[0] }}"
+        dest: "{{ docker_compose.target }}"
+        mode: u=rwx,g=rx,o=rx
+    - name: "Docker compose completion"
+      get_url:
+        url: "{{ docker_compose.completion_uri }}"
+        dest: "{{ docker_compose.completion_target }}"
+
+# vscode
+#curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+#sudo install -o root -g root -m 644 packages.microsoft.gpg /usr/share/keyrings/
+#sudo sh -c 'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
+
+    - name: "Add Microsoft Apt signing key, uses whichever key is at the URL"
+      become: yes
+      apt_key:
+        url: "{{ vscode.gpg_uri }}"
+        state: present
+    - name: "Add Microsoft repository"
+      become: yes
+      apt_repository:
+        repo: "deb [arch=amd64] {{ vscode.uri }} stable main"
+        state: present
+      register: ms_repo_updated
+    - name: "Refresh apt cache"
+      become: yes
+      apt:
+        update_cache: yes
+      when: ms_repo_updated.changed == true
+    - name: "Install VSCode"
+      become: yes
+      apt:
+        name: "{{ vscode.packages | join(',') }}"
+        state: present
+
+# GCloud
+    - name: "Add Google Apt signing key, uses whichever key is at the URL"
+      become: yes
+      apt_key:
+        url: "{{ gcloud.gpg_uri }}"
+        keyring: "/usr/share/keyrings/cloud.google.gpg"
+        state: present
+    - name: "Add Google repository"
+      become: yes
+      apt_repository:
+        repo: "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] {{ gcloud.uri }} cloud-sdk main"
+        state: present
+      register: gc_repo_updated
+    - name: "Refresh apt cache"
+      become: yes
+      apt:
+        update_cache: yes
+      when: gc_repo_updated.changed == true
+    - name: "Install GCloud"
+      become: yes
+      apt:
+        name: "{{ gcloud.packages | join(',') }}"
+        state: present
+    - name: "GCloud completion"
+      become: yes
+      copy:
+        src: "{{ gcloud_completion.completion_file }}"
+        dest: "{{ gcloud_completion.completion_target }}"
+# Snap
+    - name: "Install other stuff with snaps"
+      become: yes
+      snap:
+        name: "{{ item.name }}"
+        classic: "{{ item.classic }}"
+      with_items:
+        - "{{ snap }}"
+
+# QTerminal
+    - name: "Configure QTerminal"
+      block:
+        - name: "create colors dir"
+          file:
+            path: ~/.config/qterminal.org/color-schemes
+            state: directory
+        - name: "copy color"
+          copy:
+            src: files/My.colorscheme
+            dest: ~/.config/qterminal.org/color-schemes/My.colorscheme
+
+# Fixes
+    #- name: "Fix Volume control"
+    #  become: yes
+    #  blockinfile:
+    #    path: '/usr/share/pulseaudio/alsa-mixer/paths/analog-output.conf.common'
+    #    block: |
+    #      [Element Master]
+    #      switch = mute
+    #      volume = ignore
+    #    insertbefore: "[Element External Amplifier]"
+    #    marker: "<!-- {mark} ANSIBLE MANAGED BLOCK -->"
+    # Fix Taken from:
+    # https://gist.github.com/hamidzr/dd81e429dc86f4327ded7a2030e7d7d9
+#   Sound
+    #- name: "Get '/lib/firmware/intel/sof/sof-cnl.ri' file stat"
+    #  become: yes
+    #  stat:
+    #    path: '/lib/firmware/intel/sof/sof-cnl.ri'
+    #  register: current_firmware_stat
+    #- debug:
+    #    var: current_firmware_stat
+#    - include: install_snd_firmware.yml
+#      when: snd == 'install'
+#    - include: remove_snd_firmware.yml
+#      when: snd == 'remove'

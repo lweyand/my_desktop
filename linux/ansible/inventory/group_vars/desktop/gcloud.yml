@@ -1,0 +1,11 @@
+---
+
+gcloud:
+  gpg_uri: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+  uri: http://packages.cloud.google.com/apt
+  packages:
+    - google-cloud-sdk
+
+gcloud_completion:
+  completion_file: "files/20_completion_gcloud"
+  completion_target: '/home/laurent/.config/bash.d/20_completion_gcloud'
