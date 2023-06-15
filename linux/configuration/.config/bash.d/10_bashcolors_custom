@@ -9,7 +9,7 @@ function _update_ps1_bash() {
     PS1="$PS1"'\[\033[32m\]'       # change to green
     PS1="$PS1"'\u'                 # user
     # Add debian in red if on docker for win.
-    if [[ "$(uname -r)" =~ 'Microsoft' ]]; then
+    if [[ "$(uname -r)" =~ (M|m)icrosoft ]]; then
       PS1="$PS1"'\[\033[31m\]'     # change to red
       PS1="$PS1"'@debian'          # @debian
     else
@@ -37,13 +37,13 @@ function _update_ps1_bash() {
       PS1="$PS1"'`__git_ps1`'   # bash function
     fi
 
-    partition='/dev/sda1'
-    current_usage=$( df -h | grep ${partition} | awk {'print $5'} )
-    max_usage=90%
-    if [ ${current_usage%?} -ge ${max_usage%?} ]; then
-        PS1="$PS1"' \[\033[101m\]'            # change to red bg
-        PS1="$PS1"'${partition}>${max_usage}' # warn is current usage > max
-    fi
+    # partition='/dev/sda1'
+    # current_usage=$( df -h | grep ${partition} | awk {'print $5'} )
+    # max_usage=90%
+    # if [ ${current_usage%?} -ge ${max_usage%?} ]; then
+    #     PS1="$PS1"' \[\033[101m\]'            # change to red bg
+    #     PS1="$PS1"'${partition}>${max_usage}' # warn is current usage > max
+    # fi
 
     PS1="$PS1"'\n'                 # new line
     if [ ${last_result} -ne 0 ]; then

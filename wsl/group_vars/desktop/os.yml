@@ -1,0 +1,37 @@
+---
+
+core:
+  - tree
+  - wget
+  - net-tools
+  - lshw
+  - lsof
+  - jq
+  - git
+  - net-tools
+  - curl
+  - dos2unix
+  - dnsutils
+  - grep
+  - jq
+  - less
+  - nano
+  - openssh-client
+  - openssl
+  - postgresql-client
+  - rsync
+  - tmux
+  - tree
+  - wget
+  - lsb-release
+  - man-db
+  - netcat
+  - bash-completion
+  - graphviz
+  - graphviz-doc
+  - zip
+  - unzip
+  - shunit2
+  - python-is-python3
+  - ca-certificates
+  - pdftk

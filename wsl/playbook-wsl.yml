@@ -1,0 +1,185 @@
+---
+
+- name: 'Configure OS'
+  hosts: localhost
+  gather_facts: false
+
+  handlers:
+    - name: 'Update ca certificates'
+      become: true
+      command: 'update-ca-certificates'
+      listen: update certificates
+
+  tasks:
+    - name: "Install wanted app"
+      become: true
+      ansible.builtin.apt:
+        name: "{{ core | join(',') }}"
+        state: present
+    - name: 'Disable bell'
+      become: true
+      ansible.builtin.lineinfile:
+        path: '/etc/inputrc'
+        search_string: '#set bell-style none'
+        line: 'set bell-style none'
+    - name: 'Create bashrc config dirs'
+      ansible.builtin.file:
+        path: '~/.config/bash.d/'
+        state: directory
+    - name: 'Deploy bashrc config'
+      ansible.builtin.copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        # backup: true
+      loop:
+        - src: '../linux/configuration/.bashrc'
+          dest: '~/'
+        - src: '../linux/configuration/.config/bash.d/00_exports'
+          dest: '~/.config/bash.d/'
+        - src: '../linux/configuration/.config/bash.d/10_bashcolors_custom'
+          dest: '~/.config/bash.d/'
+        - src: '../linux/configuration/.config/bash.d/15_commands_aliases'
+          dest: '~/.config/bash.d/'
+        - src: '../linux/configuration/.config/bash.d/11_xterm_title'
+          dest: '~/.config/bash.d/'
+        - src: '../linux/configuration/.config/bash.d/12_dircolors'
+          dest: '~/.config/bash.d/'
+        - src: '../linux/configuration/.config/bash.d/20_completion'
+          dest: '~/.config/bash.d/'
+        - src: '../linux/configuration/.config/bash.d/50_proxy'
+          dest: '~/.config/bash.d/'
+    # https://bitbucket-indus.enedis.fr/projects/PLPINT/repos/scripts/raw/scripts/configure-enedis-cacerts?at=refs%2Fheads%2Fmaster
+    - name: 'Install Certificates'
+      become: true
+      ansible.builtin.get_url:
+        url: "http://artifactory-principale.enedis.fr/artifactory/wc-generic-stages/enrolment/AC/{{ item  }}.pem"
+        dest: "/usr/local/share/ca-certificates/{{ item  }}.crt"
+      loop:
+        - 'AC_INFRASTRUCTURE_EDF'
+        - 'AC_INFRASTRUCTURE_EDF_G2'
+        - 'AC_INFRASTRUCTURE_ENEDIS'
+        - 'AUTORITE_EDF'
+        - 'AUTORITE_ENEDIS'
+        - 'AUTORITE_RACINE_GROUPE_EDF'
+      notify: update certificates
+
+- name: 'Configure WSL'
+  hosts: localhost
+  gather_facts: true
+
+  tasks:
+    - name: 'Configure wsl2'
+      become: true
+      ansible.builtin.copy:
+        src: 'wsl.conf'
+        dest: '/etc/wsl.conf'
+
+- name: 'Configure Home dirs'
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: 'Map windows dir to wsl home dir'
+      file:
+        src: "/mnt/c/Users/LW12697L/{{ item }}/"
+        dest: "/home/lw12697l/{{ item }}"
+        state: link
+      loop:
+        - 'Downloads'
+        - 'Documents'
+
+- name: 'Configure Git'
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: 'Copy Git config'
+      ansible.builtin.copy:
+        src: '../cygwin/configuration/.gitconfig'
+        dest: '~/'
+    - name: "Get Git prompt"
+      ansible.builtin.get_url:
+        url: 'https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh'
+        dest: '~/.git.prompt'
+
+# - name: 'Configure kpcli'
+#   hosts: localhost
+#   gather_facts: false
+
+#   tasks:
+#     - name: 'Install python kpcli'
+#       ansible.builtin.pip:
+#         name: kpcli
+#         state: absent
+#     - name: 'Create kpcli config dir'
+#       ansible.builtin.file:
+#         path: '~/.kp/'
+#         # state: directory
+#         state: absent
+    # - name: 'Create kpcli config file'
+    #   ansible.builtin.copy:
+    #     dest: '~/.kp/config.ini'
+    #     content: |
+    #       [default]
+    #       KEEPASSDB=/mnt/c/Users/LW12697L/Documents/Database.kdbx
+
+- name: 'Configure openstack'
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: 'Install openstack'
+      ansible.builtin.pip:
+        name: python-openstackclient
+      environment:
+        PIP_INDEX_URL: https://artifactory-principale.enedis.fr/artifactory/api/pypi/remote-pypi/simple
+        PIP_TRUSTED_HOST: artifactory-principale.enedis.fr
+    - name: 'Create openstack config dirs'
+      ansible.builtin.file:
+        path: '~/.config/openstack/'
+        state: directory
+    - name: 'Configure openstack'
+      ansible.builtin.get_url:
+        url: "{{ item.url }}"
+        dest: "{{ item.dest }}"
+        validate_certs: false
+      loop:
+        - url: 'https://gitlab.adaje.oi.enedis.fr/EC3F197N/dotfiles/-/raw/master/config/openstack/clouds.yaml'
+          dest: '~/.config/openstack/clouds.yml'
+        - url: 'https://gitlab.adaje.oi.enedis.fr/EC3F197N/dotfiles/-/raw/master/config/openstack/secure.yaml'
+          dest: '~/.config/openstack/secure.yml'
+
+- name: 'Install Terraform'
+  hosts: localhost
+  gather_facts: false
+  vars:
+    tf_version: '1.3.7'
+  tasks:
+    - name: 'Check terraform'
+      ansible.builtin.stat:
+        path: '/usr/local/bin/terraform'
+      register: terraform_bin
+    - name: 'Check terraform version'
+      # ansible.builtin.command: 'terraform --version'
+      register: terraform_version
+      ansible.utils.cli_parse:
+        command: 'terraform --version'
+        parser:
+          name: ansible.netcommon.native
+      when: terraform_bin.stat.exists
+    - block:
+      - name: 'Download Terraform'
+        ansible.builtin.get_url:
+          url: "https://releases.hashicorp.com/terraform/{{ tf_version }}/terraform_{{ tf_version }}_linux_amd64.zip"
+          dest: '/tmp/terraform.zip'
+      - name: 'Install Terraform'
+        become: true
+        ansible.builtin.unarchive:
+          src: '/tmp/terraform.zip'
+          dest: '/usr/local/bin/'
+          remote_src: true
+      - name: 'Delete tmp file'
+        file:
+          path: '/tmp/terraform.zip'
+          state: absent
+      when: (not terraform_bin.stat.exists) or ( tf_version != terraform_version.parsed.version )

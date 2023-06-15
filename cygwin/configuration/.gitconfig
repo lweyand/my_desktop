@@ -27,7 +27,7 @@
 [color]
 	ui = auto
 [pull]
-	rebase = preserve
+	rebase = merges
 [rebase]
 	autostash = true
 	autosquash = true
