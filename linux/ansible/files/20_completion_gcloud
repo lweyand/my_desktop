@@ -1,1 +1,1 @@
-source /usr/lib/google-cloud-sdk/completion.bash.inc
+complete -C /usr/local/bin/terraform terraform

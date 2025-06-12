@@ -1,6 +1,7 @@
 ---
 
 java:
+  - default-jre
   - default-jdk
   - maven
   

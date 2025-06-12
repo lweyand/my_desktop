@@ -130,6 +130,64 @@
       copy:
         src: "{{ gcloud_completion.completion_file }}"
         dest: "{{ gcloud_completion.completion_target }}"
+
+# Terraform
+    - name: "Add Terraform Apt signing key, uses whichever key is at the URL"
+      become: yes
+      apt_key:
+        url: "{{ terraform.gpg_uri }}"
+        state: present
+    - name: "Add Terraform repository"
+      become: yes
+      apt_repository:
+        repo: "deb [arch=amd64] {{ terraform.uri }} {{ ubuntu_version.stdout }} main"
+        state: present
+      register: tf_repo_updated
+    - name: "Refresh apt cache"
+      become: yes
+      apt:
+        update_cache: yes
+      when: tf_repo_updated.changed == true
+    - name: "Install Terraform"
+      become: yes
+      apt:
+        name: "{{ terraform.packages | join(',') }}"
+        state: present
+    - name: "Terraform completion"
+      become: yes
+      copy:
+        src: "{{ terraform_completion.completion_file }}"
+        dest: "{{ terraform_completion.completion_target }}"
+
+# Helm
+    - name: "Add Helm Apt signing key, uses whichever key is at the URL"
+      become: yes
+      apt_key:
+        url: "{{ helm.gpg_uri }}"
+        state: present
+    - name: "Add Helm repository"
+      become: yes
+      apt_repository:
+        repo: "deb {{ helm.uri }} all main"
+        state: present
+      register: tf_repo_updated
+    - name: "Refresh apt cache"
+      become: yes
+      apt:
+        update_cache: yes
+      when: tf_repo_updated.changed == true
+    - name: "Install Helm"
+      become: yes
+      apt:
+        name: "{{ helm.packages | join(',') }}"
+        state: present
+    - name: "Helm completion"
+      become: yes
+      copy:
+        src: "{{ helm_completion.completion_file }}"
+        dest: "{{ helm_completion.completion_target }}"
+
+
 # Snap
     - name: "Install other stuff with snaps"
       become: yes
